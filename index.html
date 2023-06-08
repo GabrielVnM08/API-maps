@@ -2,45 +2,77 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapinha</title>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <style>
-        html,
-        body,
-        #map {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapinha</title>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0LcKmLnXGKmIH14ObWkv0Vq8mmHtUP9g&callback=initMap" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+
+  <style>
+    #map {
+      height: 600px;
+    }
+  </style>
 </head>
 
 <body>
-    <div id="map"></div>
+  <div id="map"></div>
+  <header>
+    <input type="file" id="csv-file" accept=".csv">
+  </header>
 
-    <script>
-        let map;
+  <script>
+    let map;
 
-        function initMap() {
-            const local = { lat: -7.83437, lng: -34.9064 };
-            map = new google.maps.Map(document.getElementById("map"), {
-                center: local,
-                zoom: 12,
-            });
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: -8.097368, lng: -34.962019 },
+        zoom: 12,
+      });
+    }
 
-            const marker = new google.maps.Marker({
-                position: local,
-                map: map,
-            });
-        }
+    window.initMap = initMap;
 
-        window.initMap = initMap;
-    </script>
+    // Evento de alteração no input de arquivo CSV
+    document.getElementById("csv-file").addEventListener("change", function (e) {
+      var file = e.target.files[0];
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0LcKmLnXGKmIH14ObWkv0Vq8mmHtUP9g&callback=initMap" async defer></script>
+      if (file) {
+        var reader = new FileReader();
+
+        // Quando o arquivo for lido
+        reader.onload = function (e) {
+          var contents = e.target.result;
+
+          Papa.parse(contents, {
+            header: true,
+            complete: function (results) {
+              var data = results.data;
+
+              var latitudeColumn = "latitude";
+              var longitudeColumn = "longitude";
+
+              data.forEach(function (row) {
+                var latitude = parseFloat(row[latitudeColumn]);
+                var longitude = parseFloat(row[longitudeColumn]);
+
+                if (!isNaN(latitude) && !isNaN(longitude)) {
+                  const marker = new google.maps.Marker({
+                    position: { lat: latitude, lng: longitude },
+                    map: map,
+                  });
+                }
+              });
+            },
+          });
+        };
+
+        reader.readAsText(file);
+      }
+    });
+  </script>
 </body>
 
 </html>
