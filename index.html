@@ -25,6 +25,8 @@
 
   <script>
     let map;
+    let markers = [];
+
 
     function initMap() {
       map = new google.maps.Map(document.getElementById("map"), {
@@ -63,6 +65,28 @@
                     position: { lat: latitude, lng: longitude },
                     map: map,
                   });
+
+                  // Criar conteúdo para a janela de informações (info window)
+                  var infoContent = '';
+                  infoContent += '<strong>' + latitudeColumn + ':</strong> ' + row[latitudeColumn] + '<br>';
+                  infoContent += '<strong>' + longitudeColumn + ':</strong> ' + row[longitudeColumn] + '<br>';
+                  for (var key in row) {
+                    if (key !== latitudeColumn && key !== longitudeColumn && row[key] !== '') {
+                      infoContent += '<strong>' + key + ':</strong> ' + row[key] + '<br>';
+                    }
+                  }
+
+                  // Criar janela de informações (info window) com o conteúdo
+                  var infoWindow = new google.maps.InfoWindow({
+                    content: infoContent,
+                  });
+
+                  // Adicionar evento de clique ao marcador
+                  marker.addListener('click', function () {
+                    infoWindow.open(map, marker);
+                  });
+
+                  markers.push(marker);
                 }
               });
             },
@@ -71,6 +95,12 @@
 
         reader.readAsText(file);
       }
+
+      // Limpar marcadores anteriores, se houver
+      markers.forEach(function (marker) {
+        marker.setMap(null);
+      });
+      markers = [];
     });
   </script>
 </body>
