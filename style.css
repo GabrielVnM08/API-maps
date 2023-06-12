@@ -1,7 +1,18 @@
-html,
-body,
-#map {
-  height: 100%;
+body {
   margin: 0;
   padding: 0;
 }
+
+#map {
+  height: 650px;
+}
+
+
+input[type="file"]::file-selector-button {
+  padding: 1px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+

@@ -6,15 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mapinha</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0LcKmLnXGKmIH14ObWkv0Vq8mmHtUP9g&callback=initMap" async defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-
-
-  <style>
-    #map {
-      height: 600px;
-    }
-  </style>
 </head>
 
 <body>
@@ -37,14 +31,12 @@
 
     window.initMap = initMap;
 
-    // Evento de alteração no input de arquivo CSV
     document.getElementById("csv-file").addEventListener("change", function (e) {
       var file = e.target.files[0];
 
       if (file) {
         var reader = new FileReader();
 
-        // Quando o arquivo for lido
         reader.onload = function (e) {
           var contents = e.target.result;
 
@@ -66,7 +58,6 @@
                     map: map,
                   });
 
-                  // Criar conteúdo para a janela de informações (info window)
                   var infoContent = '';
                   infoContent += '<strong>' + latitudeColumn + ':</strong> ' + row[latitudeColumn] + '<br>';
                   infoContent += '<strong>' + longitudeColumn + ':</strong> ' + row[longitudeColumn] + '<br>';
@@ -76,12 +67,10 @@
                     }
                   }
 
-                  // Criar janela de informações (info window) com o conteúdo
                   var infoWindow = new google.maps.InfoWindow({
                     content: infoContent,
                   });
 
-                  // Adicionar evento de clique ao marcador
                   marker.addListener('click', function () {
                     infoWindow.open(map, marker);
                   });
@@ -96,7 +85,6 @@
         reader.readAsText(file);
       }
 
-      // Limpar marcadores anteriores, se houver
       markers.forEach(function (marker) {
         marker.setMap(null);
       });
